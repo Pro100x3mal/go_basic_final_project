@@ -20,7 +20,7 @@ type Task struct {
 
 func count(db *sqlx.DB) (int, error) {
 	var count int
-	return count, db.Get(&count, `SELECT count(id) FROM scheduler`)
+	return count, db.Get(&count, `SELECT COUNT(id) FROM scheduler`)
 }
 
 func openDB(t *testing.T) *sqlx.DB {
