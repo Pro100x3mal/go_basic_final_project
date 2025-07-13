@@ -14,6 +14,7 @@ const limit = 50
 type TaskRepoWriter interface {
 	AddTask(task *models.Task) (int64, error)
 	UpdateTask(task *models.Task) error
+	DeleteTask(id string) error
 }
 
 type TaskRepoReader interface {
@@ -49,13 +50,17 @@ func (ts *TaskService) CreateTask(task *models.Task) (int64, error) {
 	return ts.writer.AddTask(task)
 }
 
-func (ts *TaskService) UpdateTask(task *models.Task) error {
+func (ts *TaskService) ChangeTask(task *models.Task) error {
 	err := ts.checkDate(task)
 	if err != nil {
 		return err
 	}
 
 	return ts.writer.UpdateTask(task)
+}
+
+func (ts *TaskService) RemoveTask(id string) error {
+	return ts.writer.DeleteTask(id)
 }
 
 func (ts *TaskService) GetTaskByID(id string) (*models.Task, error) {

@@ -17,12 +17,14 @@ func (th *TaskHandler) handleGetTasks(w http.ResponseWriter, r *http.Request) {
 			writeJson(w, err)
 			return
 		}
-	} else {
-		tasks, err = th.reader.GetAllTasks()
-		if err != nil {
-			writeJson(w, err)
-			return
-		}
+		writeJson(w, tasks)
+		return
+	}
+
+	tasks, err = th.reader.GetAllTasks()
+	if err != nil {
+		writeJson(w, err)
+		return
 	}
 
 	writeJson(w, tasks)

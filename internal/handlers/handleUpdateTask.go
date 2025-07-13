@@ -9,7 +9,7 @@ import (
 	"github.com/Pro100x3mal/go_basic_final_project/internal/models"
 )
 
-func (th *TaskHandler) handleUpdateTask(w http.ResponseWriter, r *http.Request) {
+func (th *TaskHandler) handleChangeTask(w http.ResponseWriter, r *http.Request) {
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -30,7 +30,7 @@ func (th *TaskHandler) handleUpdateTask(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	err = th.writer.UpdateTask(&task)
+	err = th.writer.ChangeTask(&task)
 	if err != nil {
 		writeJson(w, err)
 		return

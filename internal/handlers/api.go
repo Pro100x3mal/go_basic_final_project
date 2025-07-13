@@ -13,7 +13,8 @@ func (r *router) initRoutes(th *TaskHandler) {
 		r.Route("/task", func(r chi.Router) {
 			r.Post("/", th.handleCreateTask)
 			r.Get("/", th.handleGetTask)
-			r.Put("/", th.handleUpdateTask)
+			r.Put("/", th.handleChangeTask)
+			r.Delete("/", th.handleRemoveTask)
 		})
 	})
 	r.Handle("/*", http.FileServer(http.Dir("./web")))
