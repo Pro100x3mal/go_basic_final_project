@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func (th *TaskHandler) nextDayHandler(w http.ResponseWriter, r *http.Request) {
+func (th *TaskHandler) handleGetNextDate(w http.ResponseWriter, r *http.Request) {
 	now := r.FormValue("now")
 	date := r.FormValue("date")
 	repeat := r.FormValue("repeat")
@@ -21,7 +21,7 @@ func (th *TaskHandler) nextDayHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	nextDate, err := th.taskService.NextDate(nowDate, date, repeat)
+	nextDate, err := th.reader.NextDate(nowDate, date, repeat)
 	if err != nil {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
 		return

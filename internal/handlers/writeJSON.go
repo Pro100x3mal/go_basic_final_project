@@ -9,27 +9,28 @@ import (
 )
 
 func writeJson(w http.ResponseWriter, data any) {
-	var taskResp models.TaskResp
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
 
 	switch v := data.(type) {
 	case string:
-		taskResp.ID = v
-		log.Println(taskResp)
+		if err := json.NewEncoder(w).Encode(models.RespID{ID: v}); err != nil {
+			log.Println(err)
+		}
 	case error:
-		taskResp.Error = v.Error()
+		if err := json.NewEncoder(w).Encode(models.RespError{Error: v.Error()}); err != nil {
+			log.Println(err)
+		}
 	case []*models.Task:
-		taskResp.Tasks = v
-		if taskResp.Tasks == nil || len(taskResp.Tasks) == 0 {
-			taskResp.Tasks = []*models.Task{}
+		if v == nil || len(v) == 0 {
+			v = []*models.Task{}
+		}
+		if err := json.NewEncoder(w).Encode(models.RespTasks{Tasks: v}); err != nil {
+			log.Println(err)
 		}
 	default:
-		log.Printf("writeJson: unsupported data type %T\n", data)
-		taskResp.Error = "unsupported data type"
-	}
-
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(taskResp); err != nil {
-		log.Println(err)
+		if err := json.NewEncoder(w).Encode(models.RespError{Error: "unsupported data type"}); err != nil {
+			log.Println(err)
+		}
 	}
 }

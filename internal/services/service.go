@@ -9,27 +9,33 @@ import (
 	"github.com/Pro100x3mal/go_basic_final_project/internal/models"
 )
 
-type Repository interface {
+const limit = 50
+
+type TaskRepoWriter interface {
 	AddTask(task *models.Task) (int64, error)
+}
+
+type TaskRepoReader interface {
 	GetTasks(limit int) ([]*models.Task, error)
+	GetTasksByDate(date string, limit int) ([]*models.Task, error)
+	GetTasksByKeyword(search string, limit int) ([]*models.Task, error)
+}
+
+type TaskRepoInterface interface {
+	TaskRepoWriter
+	TaskRepoReader
 }
 
 type TaskService struct {
-	repo Repository
+	writer TaskRepoWriter
+	reader TaskRepoReader
 }
 
-func NewTaskService(repo Repository) *TaskService {
+func NewTaskService(repo TaskRepoInterface) *TaskService {
 	return &TaskService{
-		repo: repo,
+		writer: repo,
+		reader: repo,
 	}
-}
-
-func (ts *TaskService) GetAllTasks(limit int) ([]*models.Task, error) {
-	tasks, err := ts.repo.GetTasks(limit)
-	if err != nil {
-		return nil, err
-	}
-	return tasks, nil
 }
 
 func (ts *TaskService) CreateTask(task *models.Task) (int64, error) {
@@ -38,11 +44,18 @@ func (ts *TaskService) CreateTask(task *models.Task) (int64, error) {
 		return 0, err
 	}
 
-	id, err := ts.repo.AddTask(task)
-	if err != nil {
-		return 0, err
+	return ts.writer.AddTask(task)
+}
+
+func (ts *TaskService) GetAllTasks() ([]*models.Task, error) {
+	return ts.reader.GetTasks(limit)
+}
+
+func (ts *TaskService) SearchTasks(search string) ([]*models.Task, error) {
+	if date, err := time.Parse("02.01.2006", search); err == nil {
+		return ts.reader.GetTasksByDate(date.Format("20060102"), limit)
 	}
-	return id, nil
+	return ts.reader.GetTasksByKeyword(search, limit)
 }
 
 func afterNow(date, now time.Time) bool {

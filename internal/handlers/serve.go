@@ -10,42 +10,62 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-type TaskService interface {
+type TaskServiceWriter interface {
 	CreateTask(task *models.Task) (int64, error)
+}
+
+type TaskServiceReader interface {
 	NextDate(now time.Time, dstart string, repeat string) (string, error)
-	GetAllTasks(limit int) ([]*models.Task, error)
+	GetAllTasks() ([]*models.Task, error)
+	SearchTasks(search string) ([]*models.Task, error)
+}
+
+type TaskServiceInterface interface {
+	TaskServiceWriter
+	TaskServiceReader
 }
 
 type TaskHandler struct {
-	taskService TaskService
+	writer TaskServiceWriter
+	reader TaskServiceReader
 }
 
-func NewTaskHandler(taskService TaskService) *TaskHandler {
+func NewTaskHandler(service TaskServiceInterface) *TaskHandler {
 	return &TaskHandler{
-		taskService: taskService,
+		writer: service,
+		reader: service,
 	}
 }
 
-func newRouter(th *TaskHandler) *chi.Mux {
-	r := chi.NewRouter()
-
-	r.Get("/api/nextdate", th.nextDayHandler)
-	r.Get("/api/tasks", th.getAllTasksHandler)
-	r.Post("/api/task", th.addTaskHandler)
-	r.Handle("/*", http.FileServer(http.Dir("./web")))
-	return r
+type router struct {
+	*chi.Mux
 }
 
-func Serve(cfg *config.Config, taskService TaskService) error {
-	h := NewTaskHandler(taskService)
-	r := newRouter(h)
-
-	srv := &http.Server{
-		Addr:    "localhost:" + cfg.ServerPort,
-		Handler: r,
+func newRouter() *router {
+	return &router{
+		chi.NewRouter(),
 	}
+}
+
+type server struct {
+	*http.Server
+}
+
+func newServer(cfg *config.Config) *server {
+	return &server{
+		&http.Server{
+			Addr: "localhost:" + cfg.ServerPort,
+		},
+	}
+}
+
+func Serve(cfg *config.Config, th *TaskHandler) error {
+	r := newRouter()
+	r.initRoutes(th)
+
+	srv := newServer(cfg)
+	srv.Handler = r
 
 	log.Printf("Starting server on port %s", cfg.ServerPort)
-
 	return srv.ListenAndServe()
 }

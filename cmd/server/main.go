@@ -24,5 +24,7 @@ func run() error {
 	defer repo.Close()
 
 	taskService := services.NewTaskService(repo)
-	return handlers.Serve(cfg, taskService)
+	taskHandler := handlers.NewTaskHandler(taskService)
+
+	return handlers.Serve(cfg, taskHandler)
 }

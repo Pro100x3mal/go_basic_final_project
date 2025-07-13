@@ -10,15 +10,15 @@ import (
 	"github.com/Pro100x3mal/go_basic_final_project/internal/models"
 )
 
-func (th *TaskHandler) addTaskHandler(w http.ResponseWriter, r *http.Request) {
-	var task models.Task
-
+func (th *TaskHandler) handleCreateTask(w http.ResponseWriter, r *http.Request) {
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	defer r.Body.Close()
+
+	var task models.Task
 
 	err = json.Unmarshal(data, &task)
 	if err != nil {
@@ -31,7 +31,7 @@ func (th *TaskHandler) addTaskHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := th.taskService.CreateTask(&task)
+	id, err := th.writer.CreateTask(&task)
 	if err != nil {
 		writeJson(w, err)
 		return

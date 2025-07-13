@@ -8,8 +8,14 @@ type Task struct {
 	Repeat  string `json:"repeat"`
 }
 
-type TaskResp struct {
-	ID    string  `json:"id,omitempty"`
-	Error string  `json:"error,omitempty"`
+type RespID struct {
+	ID string `json:"id"`
+}
+
+type RespError struct {
+	Error string `json:"error"`
+}
+
+type RespTasks struct {
 	Tasks []*Task `json:"tasks"`
 }
