@@ -12,6 +12,7 @@ func (r *router) initRoutes(th *TaskHandler) {
 		r.Get("/tasks", th.handleGetTasks)
 		r.Route("/task", func(r chi.Router) {
 			r.Post("/", th.handleCreateTask)
+			r.Post("/done", th.handleCompleteTask)
 			r.Get("/", th.handleGetTask)
 			r.Put("/", th.handleChangeTask)
 			r.Delete("/", th.handleRemoveTask)

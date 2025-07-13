@@ -13,6 +13,7 @@ import (
 type TaskServiceWriter interface {
 	CreateTask(task *models.Task) (int64, error)
 	ChangeTask(task *models.Task) error
+	ChangeTaskDate(task *models.Task) error
 	RemoveTask(id string) error
 }
 

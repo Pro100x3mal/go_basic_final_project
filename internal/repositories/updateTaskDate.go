@@ -6,17 +6,13 @@ import (
 	"github.com/Pro100x3mal/go_basic_final_project/internal/models"
 )
 
-func (r *Repository) UpdateTask(task *models.Task) error {
+func (r *Repository) UpdateTaskDate(task *models.Task) error {
 	if task == nil {
-		return fmt.Errorf("cannot update task: input is nil")
+		return fmt.Errorf("cannot update task date: input is nil")
 	}
-
-	query := `UPDATE scheduler SET date=?, title=?, comment=?, repeat=? WHERE id=?`
+	query := `UPDATE scheduler SET date=? WHERE id=?`
 	res, err := r.db.Exec(query,
 		task.Date,
-		task.Title,
-		task.Comment,
-		task.Repeat,
 		task.ID,
 	)
 	if err != nil {
