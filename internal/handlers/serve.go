@@ -12,10 +12,12 @@ import (
 
 type TaskServiceWriter interface {
 	CreateTask(task *models.Task) (int64, error)
+	UpdateTask(task *models.Task) error
 }
 
 type TaskServiceReader interface {
 	NextDate(now time.Time, dstart string, repeat string) (string, error)
+	GetTaskByID(id string) (*models.Task, error)
 	GetAllTasks() ([]*models.Task, error)
 	SearchTasks(search string) ([]*models.Task, error)
 }

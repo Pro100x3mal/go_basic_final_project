@@ -13,6 +13,10 @@ func writeJson(w http.ResponseWriter, data any) {
 	w.WriteHeader(http.StatusOK)
 
 	switch v := data.(type) {
+	case struct{}:
+		if err := json.NewEncoder(w).Encode(v); err != nil {
+			log.Println(err)
+		}
 	case string:
 		if err := json.NewEncoder(w).Encode(models.RespID{ID: v}); err != nil {
 			log.Println(err)
@@ -26,6 +30,10 @@ func writeJson(w http.ResponseWriter, data any) {
 			v = []*models.Task{}
 		}
 		if err := json.NewEncoder(w).Encode(models.RespTasks{Tasks: v}); err != nil {
+			log.Println(err)
+		}
+	case *models.Task:
+		if err := json.NewEncoder(w).Encode(v); err != nil {
 			log.Println(err)
 		}
 	default:
