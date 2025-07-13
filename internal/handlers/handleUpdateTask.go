@@ -36,5 +36,5 @@ func (th *TaskHandler) handleUpdateTask(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	writeJson(w, struct{}{})
+	writeJson(w, &models.RespOk{})
 }

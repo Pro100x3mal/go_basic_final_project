@@ -13,7 +13,7 @@ func writeJson(w http.ResponseWriter, data any) {
 	w.WriteHeader(http.StatusOK)
 
 	switch v := data.(type) {
-	case struct{}:
+	case *models.RespOk:
 		if err := json.NewEncoder(w).Encode(v); err != nil {
 			log.Println(err)
 		}

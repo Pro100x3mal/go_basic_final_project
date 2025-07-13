@@ -16,6 +16,8 @@ type RespError struct {
 	Error string `json:"error"`
 }
 
+type RespOk struct{}
+
 type RespTasks struct {
 	Tasks []*Task `json:"tasks"`
 }
