@@ -58,7 +58,7 @@ type server struct {
 func newServer(cfg *config.Config) *server {
 	return &server{
 		&http.Server{
-			Addr: "localhost:" + cfg.ServerPort,
+			Addr: "0.0.0.0:" + cfg.ServerPort,
 		},
 	}
 }
