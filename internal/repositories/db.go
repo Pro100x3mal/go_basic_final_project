@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"os"
 
+	"github.com/Pro100x3mal/go_basic_final_project/internal/config"
 	_ "modernc.org/sqlite"
 )
 
@@ -23,18 +24,13 @@ type Repository struct {
 	db *sql.DB
 }
 
-func NewRepository() (*Repository, error) {
-	dbFile := os.Getenv("TODO_DBFILE")
-	if dbFile == "" {
-		dbFile = "scheduler.db"
-	}
-
+func NewRepository(cfg *config.Config) (*Repository, error) {
 	var install bool
-	if _, err := os.Stat(dbFile); os.IsNotExist(err) {
+	if _, err := os.Stat(cfg.DBFile); os.IsNotExist(err) {
 		install = true
 	}
 
-	db, err := sql.Open("sqlite", dbFile)
+	db, err := sql.Open("sqlite", cfg.DBFile)
 	if err != nil {
 		return nil, err
 	}

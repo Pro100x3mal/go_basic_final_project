@@ -17,7 +17,8 @@ func main() {
 
 func run() error {
 	cfg := config.NewConfig()
-	repo, err := repositories.NewRepository()
+
+	repo, err := repositories.NewRepository(cfg)
 	if err != nil {
 		return err
 	}

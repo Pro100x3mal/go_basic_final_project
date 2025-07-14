@@ -36,6 +36,10 @@ func writeJson(w http.ResponseWriter, data any) {
 		if err := json.NewEncoder(w).Encode(v); err != nil {
 			log.Println(err)
 		}
+	case *models.RespToken:
+		if err := json.NewEncoder(w).Encode(v); err != nil {
+			log.Println(err)
+		}
 	default:
 		if err := json.NewEncoder(w).Encode(models.RespError{Error: "unsupported data type"}); err != nil {
 			log.Println(err)

@@ -65,7 +65,7 @@ func newServer(cfg *config.Config) *server {
 
 func Serve(cfg *config.Config, th *TaskHandler) error {
 	r := newRouter()
-	r.initRoutes(th)
+	r.initRoutes(cfg, th)
 
 	srv := newServer(cfg)
 	srv.Handler = r

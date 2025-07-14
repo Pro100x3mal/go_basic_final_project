@@ -21,3 +21,11 @@ type RespOk struct{}
 type RespTasks struct {
 	Tasks []*Task `json:"tasks"`
 }
+
+type Password struct {
+	Password string `json:"password"`
+}
+
+type RespToken struct {
+	Token string `json:"token"`
+}
