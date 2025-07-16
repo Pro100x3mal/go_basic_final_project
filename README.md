@@ -27,9 +27,9 @@ Todo List Scheduler - это веб-приложение для управлен
 
 ```
 TODO_PORT=7540 # порт HTTP сервера
-TODO_DBFILE=scheduler.db # путь к файлу базы данных
 TODO_PASSWORD=admin # пароль для аутентификации с помощью JWT
 TODO_JWT_SECRET=your-secret # секрет для генерации и валидации подписи JWT
+TODO_DBFILE=scheduler.db # путь к файлу базы данных
 ```
 ### ⚙️ Флаги командной строки
 
@@ -38,6 +38,9 @@ TODO_JWT_SECRET=your-secret # секрет для генерации и вали
 ```
 
 ### ▶️ Команда запуска из исходного кода
+
+> ⚠️ **Важно:** По умолчанию сервер запускается с установленным паролем `admin`.  
+> Если вы измените пароль через переменную окружения `TODO_PASSWORD`, необходимо также обновить значение переменной `Token` в тестах в файле `./tests/settings.go`, чтобы тесты успешно проходили.
 
 ```bash
 go run ./cmd/server
@@ -58,7 +61,7 @@ var Port = 7540
 var DBFile = "../scheduler.db"
 var FullNextDate = false
 var Search = true
-var Token = `<сгенерированный JWT токен>`
+var Token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTI3MTI0NzUsImhhc2giOiI4YzY5NzZlNWI1NDEwNDE1YmRlOTA4YmQ0ZGVlMTVkZmIxNjdhOWM4NzNmYzRiYjhhODFmNmYyYWI0NDhhOTE4In0.Ewcoh7c5Hb6mQcuuSjHz76DCfZU7rX7TBW9GGluOn8U`
 
 ```
 
@@ -80,6 +83,7 @@ docker build -t go-todo-app .
 
 ```bash
 docker run -p 7540:7540 \
+  -e TODO_PORT=7540 \
   -e TODO_PASSWORD=admin \
   -e TODO_JWT_SECRET=very-secret-key \
   -e TODO_DBFILE=scheduler.db \

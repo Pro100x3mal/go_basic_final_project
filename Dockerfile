@@ -17,6 +17,8 @@ COPY --from=builder /app/app .
 COPY --from=builder /app/web ./web
 
 ENV TODO_PORT=7540
+ENV TODO_PASSWORD=admin
+ENV TODO_JWT_SECRET=very-secret-key
 ENV TODO_DBFILE=scheduler.db
 
 CMD ["./app"]

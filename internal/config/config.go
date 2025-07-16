@@ -21,9 +21,11 @@ func NewConfig() *Config {
 		cfg.ServerPort = envPort
 	}
 
-	if envPassword := os.Getenv("TODO_PASSWORD"); envPassword != "" {
-		cfg.Password = envPassword
+	envPassword := os.Getenv("TODO_PASSWORD")
+	if envPassword == "" {
+		envPassword = "admin"
 	}
+	cfg.Password = envPassword
 
 	jwtSecret := os.Getenv("TODO_JWT_SECRET")
 	if jwtSecret == "" {
