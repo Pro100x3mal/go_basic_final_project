@@ -9,14 +9,12 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o app ./cmd/server
 
-FROM ubuntu:latest
+FROM alpine:latest
 
 WORKDIR /app
 
 COPY --from=builder /app/app .
 COPY --from=builder /app/web ./web
-
-EXPOSE 7540
 
 ENV TODO_PORT=7540
 ENV TODO_DBFILE=scheduler.db
