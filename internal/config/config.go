@@ -7,6 +7,9 @@ import (
 
 type Config struct {
 	ServerPort string
+	Password   string
+	DBFile     string
+	JWTSecret  string
 }
 
 func NewConfig() *Config {
@@ -17,5 +20,24 @@ func NewConfig() *Config {
 	if envPort := os.Getenv("TODO_PORT"); envPort != "" {
 		cfg.ServerPort = envPort
 	}
+
+	envPassword := os.Getenv("TODO_PASSWORD")
+	if envPassword == "" {
+		envPassword = "admin"
+	}
+	cfg.Password = envPassword
+
+	jwtSecret := os.Getenv("TODO_JWT_SECRET")
+	if jwtSecret == "" {
+		jwtSecret = "very-secret-key"
+	}
+	cfg.JWTSecret = jwtSecret
+
+	envDBFile := os.Getenv("TODO_DBFILE")
+	if envDBFile == "" {
+		envDBFile = "scheduler.db"
+	}
+	cfg.DBFile = envDBFile
+
 	return &cfg
 }

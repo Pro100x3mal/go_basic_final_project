@@ -17,12 +17,15 @@ func main() {
 
 func run() error {
 	cfg := config.NewConfig()
-	repo, err := repositories.NewRepository()
+
+	repo, err := repositories.NewRepository(cfg)
 	if err != nil {
 		return err
 	}
 	defer repo.Close()
 
 	taskService := services.NewTaskService(repo)
-	return handlers.Serve(cfg, taskService)
+	taskHandler := handlers.NewTaskHandler(taskService)
+
+	return handlers.Serve(cfg, taskHandler)
 }
