@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/Pro100x3mal/go_basic_final_project/internal/models"
@@ -18,7 +20,10 @@ func (r *Repository) GetTask(id string) (*models.Task, error) {
 		&task.Repeat,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to fetch tasks by ID %s: %w", id, err)
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, models.ErrTaskNotFound
+		}
+		return nil, fmt.Errorf("database error: failed to fetch tasks by ID %s: %w", id, err)
 	}
 
 	return task, nil

@@ -10,7 +10,7 @@ func (r *Repository) AddTask(task *models.Task) (int64, error) {
 	var id int64
 
 	if task == nil {
-		return id, fmt.Errorf("cannot add task: input is nil")
+		return id, fmt.Errorf("database error: input is nil")
 	}
 
 	query := `INSERT INTO scheduler (date, title, comment, repeat) VALUES (?, ?, ?, ?)`
@@ -21,12 +21,12 @@ func (r *Repository) AddTask(task *models.Task) (int64, error) {
 		task.Repeat,
 	)
 	if err != nil {
-		return id, fmt.Errorf("failed to execute insert query: %w", err)
+		return id, fmt.Errorf("database error: failed to execute insert query: %w", err)
 	}
 
 	id, err = res.LastInsertId()
 	if err != nil {
-		return id, fmt.Errorf("failed to retrieve inserted task ID: %w", err)
+		return id, fmt.Errorf("database error: failed to retrieve inserted task ID: %w", err)
 	}
 
 	return id, nil

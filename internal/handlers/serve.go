@@ -3,7 +3,6 @@ package handlers
 import (
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/Pro100x3mal/go_basic_final_project/internal/config"
 	"github.com/Pro100x3mal/go_basic_final_project/internal/models"
@@ -11,17 +10,16 @@ import (
 )
 
 type TaskServiceWriter interface {
-	CreateTask(task *models.Task) (int64, error)
+	CreateTask(task *models.Task) (string, error)
 	ChangeTask(task *models.Task) error
-	ChangeTaskDate(task *models.Task) error
 	RemoveTask(id string) error
+	CompleteTask(id string) error
 }
 
 type TaskServiceReader interface {
-	NextDate(now time.Time, dstart string, repeat string) (string, error)
 	GetTaskByID(id string) (*models.Task, error)
-	GetAllTasks() ([]*models.Task, error)
-	SearchTasks(search string) ([]*models.Task, error)
+	GetTasks(search string) ([]*models.Task, error)
+	GetNextDate(now, date, repeat string) (string, error)
 }
 
 type TaskServiceInterface interface {

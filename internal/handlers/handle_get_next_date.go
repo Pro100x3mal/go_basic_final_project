@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"io"
 	"net/http"
-	"time"
+
+	"github.com/Pro100x3mal/go_basic_final_project/internal/models"
 )
 
 func (th *TaskHandler) handleGetNextDate(w http.ResponseWriter, r *http.Request) {
@@ -10,24 +12,13 @@ func (th *TaskHandler) handleGetNextDate(w http.ResponseWriter, r *http.Request)
 	date := r.FormValue("date")
 	repeat := r.FormValue("repeat")
 
-	if now == "" || date == "" || repeat == "" {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
-		return
-	}
-
-	nowDate, err := time.Parse("20060102", now)
+	nextDate, err := th.reader.GetNextDate(now, date, repeat)
 	if err != nil {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
-		return
-	}
-
-	nextDate, err := th.reader.NextDate(nowDate, date, repeat)
-	if err != nil {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
+		writeJson(w, &models.RespError{Error: err.Error()}, http.StatusBadRequest)
 		return
 	}
 
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(nextDate))
+	io.WriteString(w, nextDate)
 }

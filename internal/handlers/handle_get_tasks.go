@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"errors"
+	"log"
 	"net/http"
 
 	"github.com/Pro100x3mal/go_basic_final_project/internal/models"
@@ -8,24 +10,22 @@ import (
 
 func (th *TaskHandler) handleGetTasks(w http.ResponseWriter, r *http.Request) {
 	search := r.URL.Query().Get("search")
-	var tasks []*models.Task
-	var err error
 
-	if search != "" {
-		tasks, err = th.reader.SearchTasks(search)
-		if err != nil {
-			writeJson(w, err)
+	tasks, err := th.reader.GetTasks(search)
+	if err != nil {
+		if errors.Is(err, models.ErrInternalServerError) {
+			log.Println(err)
+			writeJson(w, &models.RespError{Error: "internal server error"}, http.StatusInternalServerError)
 			return
 		}
-		writeJson(w, tasks)
+		writeJson(w, &models.RespError{Error: err.Error()}, http.StatusBadRequest)
 		return
 	}
 
-	tasks, err = th.reader.GetAllTasks()
-	if err != nil {
-		writeJson(w, err)
-		return
+	if tasks == nil || len(tasks) == 0 {
+		tasks = []*models.Task{}
 	}
 
-	writeJson(w, tasks)
+	writeJson(w, &models.RespTasks{Tasks: tasks}, http.StatusOK)
+	return
 }

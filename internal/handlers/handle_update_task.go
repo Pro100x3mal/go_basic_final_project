@@ -3,38 +3,34 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
-	"io"
+	"log"
 	"net/http"
 
 	"github.com/Pro100x3mal/go_basic_final_project/internal/models"
 )
 
 func (th *TaskHandler) handleChangeTask(w http.ResponseWriter, r *http.Request) {
-	data, err := io.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	defer r.Body.Close()
-
 	var task models.Task
 
-	err = json.Unmarshal(data, &task)
+	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
+		writeJson(w, &models.RespError{Error: "invalid request body"}, http.StatusBadRequest)
+		return
+	}
+
+	err := th.writer.ChangeTask(&task)
 	if err != nil {
-		writeJson(w, err)
+		if errors.Is(err, models.ErrInternalServerError) {
+			log.Println(err)
+			writeJson(w, &models.RespError{Error: "internal server error"}, http.StatusInternalServerError)
+			return
+		}
+		if errors.Is(err, models.ErrTaskNotFound) {
+			writeJson(w, &models.RespError{Error: err.Error()}, http.StatusNotFound)
+			return
+		}
+		writeJson(w, &models.RespError{Error: err.Error()}, http.StatusBadRequest)
 		return
 	}
 
-	if task.ID == "" || task.Date == "" || task.Title == "" {
-		writeJson(w, errors.New("task id or title or date is empty"))
-		return
-	}
-
-	err = th.writer.ChangeTask(&task)
-	if err != nil {
-		writeJson(w, err)
-		return
-	}
-
-	writeJson(w, &models.RespOk{})
+	writeJson(w, &models.RespOk{}, http.StatusOK)
 }
