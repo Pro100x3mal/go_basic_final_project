@@ -84,6 +84,10 @@ func (ts *TaskService) ChangeTask(task *models.Task) error {
 }
 
 func (ts *TaskService) CompleteTask(id string) error {
+	if id == "" {
+		return errors.New("task id is required")
+	}
+
 	task, err := ts.GetTaskByID(id)
 	if err != nil {
 		return err
@@ -130,7 +134,7 @@ func (ts *TaskService) RemoveTask(id string) error {
 
 func (ts *TaskService) GetTaskByID(id string) (*models.Task, error) {
 	if id == "" {
-		return nil, errors.New("task ID must not be empty")
+		return nil, errors.New("task id is required")
 	}
 
 	task, err := ts.reader.GetTask(id)
