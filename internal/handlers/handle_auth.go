@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/Pro100x3mal/go_basic_final_project/internal/models"
@@ -38,8 +37,6 @@ func (ah *AuthHandler) handleAuth(w http.ResponseWriter, r *http.Request) {
 		writeJson(w, &models.RespError{Error: err.Error()}, http.StatusUnauthorized)
 		return
 	}
-
-	fmt.Println(token.Token)
 
 	writeJson(w, &token, http.StatusOK)
 }
