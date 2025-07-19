@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -10,6 +11,7 @@ import (
 
 type AuthServiceInterface interface {
 	Authenticate(p *models.Password) (string, error)
+	ValidateToken(tokenStr string) (bool, error)
 }
 type AuthHandler struct {
 	auth AuthServiceInterface
@@ -40,4 +42,12 @@ func (ah *AuthHandler) handleAuth(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(token.Token)
 
 	writeJson(w, &token, http.StatusOK)
+}
+
+func (ah *AuthHandler) Validate(tokenStr string) (bool, error) {
+	if len(tokenStr) == 0 {
+		return false, errors.New("invalid token")
+	}
+
+	return ah.auth.ValidateToken(tokenStr)
 }

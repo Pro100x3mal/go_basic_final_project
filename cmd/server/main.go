@@ -27,5 +27,8 @@ func run() error {
 	taskService := services.NewTaskService(repo)
 	taskHandler := handlers.NewTaskHandler(taskService)
 
-	return handlers.Serve(cfg, taskHandler)
+	authService := services.NewAuthService(cfg)
+	authHandler := handlers.NewAuthHandler(authService)
+
+	return handlers.Serve(cfg, taskHandler, authHandler)
 }

@@ -38,8 +38,8 @@ func (as *AuthService) Authenticate(p *models.Password) (string, error) {
 	return token.SignedString([]byte(as.secret))
 }
 
-func (as *AuthService) ValidateToken(tokenString string) (bool, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+func (as *AuthService) ValidateToken(tokenStr string) (bool, error) {
+	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		return []byte(as.secret), nil
 	})
 	if err != nil || !token.Valid {

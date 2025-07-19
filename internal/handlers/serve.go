@@ -56,18 +56,18 @@ type server struct {
 func newServer(cfg *config.Config) *server {
 	return &server{
 		&http.Server{
-			Addr: "0.0.0.0:" + cfg.ServerPort,
+			Addr: cfg.ServerAddr,
 		},
 	}
 }
 
-func Serve(cfg *config.Config, th *TaskHandler) error {
+func Serve(cfg *config.Config, th *TaskHandler, ah *AuthHandler) error {
 	r := newRouter()
-	r.initRoutes(cfg, th)
+	r.initRoutes(cfg, th, ah)
 
 	srv := newServer(cfg)
 	srv.Handler = r
 
-	log.Printf("Starting server on port %s", cfg.ServerPort)
+	log.Printf("Starting server on port %s", cfg.ServerAddr)
 	return srv.ListenAndServe()
 }
